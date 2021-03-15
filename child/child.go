@@ -22,7 +22,7 @@ func isOnline() bool {
 }
 
 func execWebService(endpoint string) {
-	cmd := exec.Command("dir")
+	cmd := exec.Command("chromium-browser", endpoint)
 
 	stdout, err := cmd.Output()
 	if err != nil {
@@ -65,10 +65,11 @@ func handleConnection(conn net.Conn) {
 			return
 		}
 
-		log.Println("Client message:", string(buffer[:len(buffer)-1]))
+		mes := string(buffer[:len(buffer)-1])
+
+		log.Println("Client message:", mes)
 
 		conn.Write(buffer)
-		mes := string(buffer)
 
 		// parse the data
 		req := strings.Split(mes, " ")
