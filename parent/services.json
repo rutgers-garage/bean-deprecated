@@ -1,0 +1,52 @@
+{
+    "alfonso": {
+        "ip": "172.16.6.86",
+        "supported": [
+            {
+                "title": "penis",
+                "endpoint": "penis",
+                "serviceType": "penis" 
+            }
+        ]
+    },
+    "ali": {
+        "ip": "",
+        "supported": [
+            {
+                "title": "",
+                "endpoint": "",
+                "serviceType": "" 
+            }
+        ]
+    },
+    "shyam": {
+        "ip": "",
+        "supported": [
+            {
+                "title": "",
+                "endpoint": "",
+                "serviceType": "" 
+            }
+        ]
+    },
+    "kuber": {
+        "ip": "",
+        "supported": [
+            {
+                "title": "",
+                "endpoint": "",
+                "serviceType": "" 
+            }
+        ]
+    },
+    "henry": {
+        "ip": "",
+        "supported": [
+            {
+                "title": "",
+                "endpoint": "",
+                "serviceType": "" 
+            }
+        ]
+    }
+}
