@@ -33,15 +33,17 @@ func main() {
 	parseJSON()
 
 	// start
-	connectChild()
+	connectChild("192.168.25.183", "8080")
 
 }
 
-func connectChild() {
-	conn, err := net.Dial("tcp", "localhost:8080")
+func connectChild(ip string, port string) {
+	fmt.Println("Trying to connect to child. " + ip + ":" + port)
+	conn, err := net.Dial("tcp", ip+":"+port)
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println("Connection established")
 	reader := bufio.NewReader(os.Stdin)
 	for {
 		fmt.Print("Text to send: ")
