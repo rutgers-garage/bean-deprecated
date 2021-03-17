@@ -11,7 +11,7 @@ import (
 
 func main() {
 
-	listenParent("192.168.25.183", "8080")
+	listenParent("", "8080")
 }
 
 func isOnline() bool {
@@ -32,8 +32,7 @@ func execWebService(endpoint string) {
 // TODO: Make it so it kills specific web apps instead of all of them?
 func killWebService() {
 	cmd := exec.Command("pkill", "-o", "chromium")
-	cmd.Start()
-
+	cmd.Run()
 }
 
 func execShellService() {
@@ -43,7 +42,7 @@ func execShellService() {
 // listen for parent connection
 func listenParent(ip string, port string) {
 	fmt.Println("Listening on: " + ip + ":" + port)
-	l, err := net.Listen("tcp", ip+":"+port)
+	l, err := net.Listen("tcp", ":"+port)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -80,8 +79,9 @@ func handleConnection(conn net.Conn) {
 		req := strings.Split(mes, " ")
 
 		if req[0] == "web" {
-			execWebService(req[1])
+			go execWebService(req[1])
 		} else if req[0] == "terminate" {
+			fmt.Println("Terminating chromium")
 			killWebService()
 		}
 

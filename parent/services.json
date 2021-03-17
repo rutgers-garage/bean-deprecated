@@ -1,16 +1,6 @@
 {
-    "alfonso": {
-        "ip": "172.16.6.86",
-        "supported": [
-            {
-                "title": "penis",
-                "endpoint": "penis",
-                "serviceType": "penis" 
-            }
-        ]
-    },
     "ali": {
-        "ip": "",
+        "ip": "172.16.6.70",
         "supported": [
             {
                 "title": "",
@@ -19,8 +9,18 @@
             }
         ]
     },
+    "alfonso": {
+        "ip": "172.16.6.71",
+        "supported": [
+            {
+                "title": "penis",
+                "endpoint": "penis",
+                "serviceType": "penis" 
+            }
+        ]
+    },
     "shyam": {
-        "ip": "",
+        "ip": "172.16.6.72",
         "supported": [
             {
                 "title": "",
@@ -30,7 +30,7 @@
         ]
     },
     "kuber": {
-        "ip": "",
+        "ip": "172.16.6.73",
         "supported": [
             {
                 "title": "",
@@ -40,7 +40,7 @@
         ]
     },
     "henry": {
-        "ip": "",
+        "ip": "172.16.6.74",
         "supported": [
             {
                 "title": "",

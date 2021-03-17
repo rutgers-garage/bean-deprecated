@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net"
+	"net/http"
 	"os"
 )
 
@@ -32,8 +33,54 @@ func main() {
 	// Find all the machines from json
 	parseJSON()
 
-	// start
-	connectChild("192.168.25.183", "8080")
+	// set up http server
+	http.HandleFunc("/bean", httpStuff)
+	http.ListenAndServe(":8081", nil)
+}
+
+func httpStuff(w http.ResponseWriter, req *http.Request) {
+
+	if req.URL.Path != "/bean" {
+		http.Error(w, "404 not found.", http.StatusNotFound)
+		return
+	}
+
+	fmt.Println("Connection established")
+	switch req.Method {
+	case "GET":
+		fmt.Println("GET request")
+		http.ServeFile(w, req, "test.html")
+	case "POST":
+		fmt.Println("POST request")
+		if err := req.ParseForm(); err != nil {
+			fmt.Fprintf(w, "ParseForm() err: %v", err)
+			return
+		}
+		command := req.FormValue("command")
+		machine := req.FormValue("machine")
+		fmt.Fprintf(w, "Machine = %s\n", machine)
+		fmt.Fprintf(w, "Name = %s\n", command)
+		// get machine ip
+		ip := machines[machine].Ip
+		// try to connect to child
+		connectChildPost(command, ip, "8080")
+	default:
+		fmt.Fprintf(w, "Sorry, only GET and POST methods are supported.")
+	}
+}
+
+func connectChildPost(command string, ip string, port string) {
+	fmt.Println("Trying to connect to child. " + ip + ":" + port)
+	conn, err := net.Dial("tcp", ip+":"+port)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("Connection established")
+	command = command + "\n"
+	fmt.Println("Sending message:\n" + command + "to child. IP: " + ip + ":" + port)
+	fmt.Fprint(conn, command)
+	message, _ := bufio.NewReader(conn).ReadString('\n')
+	log.Print("Server relay:", message)
 
 }
 
