@@ -9,6 +9,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"time"
 )
 
 type Service struct {
@@ -56,11 +57,26 @@ func httpStuff(w http.ResponseWriter, req *http.Request) {
 		}
 		command := req.FormValue("command")
 		machine := req.FormValue("machine")
+
+		// check if the machine exists
+		if _, found := machines[machine]; !found {
+			// machine isnt running
+			fmt.Println("Machine does not exist")
+			http.Error(w, "Machine does not exist", http.StatusNotFound)
+			break
+		}
+
+		// check if the status is true
+		if statuses[machine] == false {
+			// machine isnt running
+			fmt.Println("Machine is not running")
+			http.Error(w, "Machine is not running", http.StatusNotFound)
+			break
+		}
 		fmt.Fprintf(w, "Machine = %s\n", machine)
 		fmt.Fprintf(w, "Name = %s\n", command)
 		// get machine ip
-		//ip := machines[machine].Ip
-		ip := "172.31.134.188" // testing to see how to overcome the socket binding issue
+		ip := machines[machine].Ip
 
 		// try to connect to child
 		connectChildPost(command, ip, "8080")
@@ -119,11 +135,18 @@ func pollMachines() {
 		//bind req status
 		ip := machines[k].Ip
 		port := "8080"
-		conn, err := net.DialTimeout("tcp", net.JoinHostPort(ip, port), 5)
+		conn, err := net.DialTimeout("tcp", net.JoinHostPort(ip, port), 1*time.Second)
 		if err != nil {
 			// machine not active
 			continue
 		}
+
+		// send a poll message
+		fmt.Fprint(conn, "poll\n")
+		// wait for response
+		message, _ := bufio.NewReader(conn).ReadString('\n')
+		log.Print("Server relay:", message)
+
 		conn.Close()
 		fmt.Println("Machine: " + k + " is running")
 		//close

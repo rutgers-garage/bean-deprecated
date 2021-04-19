@@ -37,14 +37,13 @@ func execShellService() {
 
 // listen for parent connection
 func listenParent(ip string, port string) {
+	fmt.Println("Listening on: " + ip + ":" + port)
+	l, err := net.Listen("tcp", ":"+port)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer l.Close()
 	for {
-		fmt.Println("Listening on: " + ip + ":" + port)
-		l, err := net.Listen("tcp", ":"+port)
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer l.Close()
-
 		c, err := l.Accept()
 		if err != nil {
 			log.Fatal(err)
@@ -59,31 +58,31 @@ func listenParent(ip string, port string) {
 }
 func handleConnection(conn net.Conn) {
 	reader := bufio.NewReader(conn)
-	for {
-		fmt.Println("Waiting for parent message")
-		buffer, err := reader.ReadBytes('\n')
-		fmt.Println("After buffer read")
-		if err != nil {
-			fmt.Println("Client left.")
-			conn.Close()
-			return
-		}
+	fmt.Println("Waiting for parent message")
+	buffer, err := reader.ReadBytes('\n')
+	fmt.Println("After buffer read")
+	if err != nil {
+		fmt.Println("Client left.")
+		conn.Close()
+		return
+	}
 
-		mes := string(buffer[:len(buffer)-1])
+	mes := string(buffer[:len(buffer)-1])
 
-		log.Println("Client message:", mes)
+	log.Println("Client message:", mes)
 
-		conn.Write(buffer)
+	conn.Write(buffer)
 
-		// parse the data
-		req := strings.Split(mes, " ")
+	// parse the data
+	req := strings.Split(mes, " ")
 
-		if req[0] == "web" {
-			go execWebService(req[1])
-		} else if req[0] == "terminate" {
-			fmt.Println("Terminating chromium")
-			killWebService()
-		}
-
+	if req[0] == "web" {
+		go execWebService(req[1])
+	} else if req[0] == "terminate" {
+		fmt.Println("Terminating chromium")
+		killWebService()
+	} else if req[0] == "poll" {
+		conn.Close()
+		return
 	}
 }
