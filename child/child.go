@@ -11,7 +11,7 @@ import (
 
 func main() {
 
-	listenParent("0.0.0.0", "8080")
+	listenParent("", "8080")
 }
 
 func execWebService(endpoint string) {
@@ -59,30 +59,31 @@ func listenParent(ip string, port string) {
 }
 func handleConnection(conn net.Conn) {
 	reader := bufio.NewReader(conn)
-	fmt.Println("Waiting for parent message")
-	buffer, err := reader.ReadBytes('\n')
-	fmt.Println("After buffer read")
-	if err != nil {
-		fmt.Println("Client left.")
-		conn.Close()
-		return
+	for {
+		fmt.Println("Waiting for parent message")
+		buffer, err := reader.ReadBytes('\n')
+		fmt.Println("After buffer read")
+		if err != nil {
+			fmt.Println("Client left.")
+			conn.Close()
+			return
+		}
+
+		mes := string(buffer[:len(buffer)-1])
+
+		log.Println("Client message:", mes)
+
+		conn.Write(buffer)
+
+		// parse the data
+		req := strings.Split(mes, " ")
+
+		if req[0] == "web" {
+			go execWebService(req[1])
+		} else if req[0] == "terminate" {
+			fmt.Println("Terminating chromium")
+			killWebService()
+		}
+
 	}
-
-	mes := string(buffer[:len(buffer)-1])
-
-	log.Println("Client message:", mes)
-
-	conn.Write(buffer)
-
-	// parse the data
-	req := strings.Split(mes, " ")
-
-	if req[0] == "web" {
-		go execWebService(req[1])
-	} else if req[0] == "terminate" {
-		fmt.Println("Terminating chromium")
-		killWebService()
-	}
-
-	conn.Close()
 }

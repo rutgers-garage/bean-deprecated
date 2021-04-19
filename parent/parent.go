@@ -29,7 +29,7 @@ func main() {
 	// Find all the machines from json
 	parseJSON()
 	// check statuses of machines
-	//pollMachines()
+	pollMachines()
 
 	// set up http server
 	http.HandleFunc("/bean", httpStuff)
@@ -60,7 +60,7 @@ func httpStuff(w http.ResponseWriter, req *http.Request) {
 		fmt.Fprintf(w, "Name = %s\n", command)
 		// get machine ip
 		//ip := machines[machine].Ip
-		ip := "172.31.233.250"
+		ip := "172.31.134.188" // testing to see how to overcome the socket binding issue
 
 		// try to connect to child
 		connectChildPost(command, ip, "8080")
@@ -119,7 +119,7 @@ func pollMachines() {
 		//bind req status
 		ip := machines[k].Ip
 		port := "8080"
-		conn, err := net.Dial("tcp", ip+":"+port)
+		conn, err := net.DialTimeout("tcp", net.JoinHostPort(ip, port), 5)
 		if err != nil {
 			// machine not active
 			continue
