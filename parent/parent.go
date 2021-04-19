@@ -11,11 +11,6 @@ import (
 	"os"
 )
 
-type PollStatus struct {
-	MachineName string
-	Status      bool
-}
-
 type Service struct {
 	Title       string
 	Endpoint    string
@@ -28,10 +23,13 @@ type Machine struct {
 }
 
 var machines map[string]Machine
+var statuses map[string]bool
 
 func main() {
 	// Find all the machines from json
 	parseJSON()
+	// check statuses of machines
+	//pollMachines()
 
 	// set up http server
 	http.HandleFunc("/bean", httpStuff)
@@ -61,7 +59,9 @@ func httpStuff(w http.ResponseWriter, req *http.Request) {
 		fmt.Fprintf(w, "Machine = %s\n", machine)
 		fmt.Fprintf(w, "Name = %s\n", command)
 		// get machine ip
-		ip := machines[machine].Ip
+		//ip := machines[machine].Ip
+		ip := "172.31.233.250"
+
 		// try to connect to child
 		connectChildPost(command, ip, "8080")
 	default:
@@ -108,24 +108,40 @@ func connectChild(ip string, port string) {
 
 // check which machines are online
 // TODO: set the status correctly
-func pollMachines() []PollStatus {
-	statuses := make([]PollStatus, 0, len(machines))
+func pollMachines() {
+
+	// create statuses map
+	statuses = make(map[string]bool)
+
+	fmt.Println("Polling machines")
 	for k := range machines {
-		statuses = append(statuses, PollStatus{MachineName: k, Status: true})
+		fmt.Println("Polling: " + k)
+		//bind req status
+		ip := machines[k].Ip
+		port := "8080"
+		conn, err := net.Dial("tcp", ip+":"+port)
+		if err != nil {
+			// machine not active
+			continue
+		}
+		conn.Close()
+		fmt.Println("Machine: " + k + " is running")
+		//close
+		statuses[k] = true
 	}
-	return statuses
+	fmt.Println("Finished polling")
+
 }
 
 // executes this command on specified machine
 func executeCommand(machineName string, cmd string) bool {
 
-	statuses := pollMachines()
 	statusFlag := false
 
 	// check if machine is available
-	for _, machine := range statuses {
-		if machine.MachineName == machineName {
-			statusFlag = true
+	for k := range statuses {
+		if k == machineName {
+			statusFlag = statuses[k]
 		}
 	}
 
