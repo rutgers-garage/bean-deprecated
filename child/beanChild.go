@@ -11,7 +11,7 @@ import (
 type Child struct{}
 
 func (c *Child) ExecWebService(endpoint *string, childRetString *string) error {
-	cmd := exec.Command("explorer", *endpoint)
+	cmd := exec.Command("chromium", *endpoint)
 
 	stdout, err := cmd.Output()
 	if err != nil {
