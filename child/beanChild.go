@@ -26,6 +26,12 @@ func (c *Child) ExecWebService(endpoint *string, childRetString *string) error {
 	// fmt.Println((stdout))
 }
 
+func (c *Child) Up(req *string, ret *bool) error {
+	*ret = true
+
+	return nil
+}
+
 func main() {
 	c := &Child{}
 	rpc.Register(c)
