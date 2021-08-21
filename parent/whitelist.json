@@ -1,3 +1,47 @@
 {
-    "*": []
+  "*": [],
+  "rob": {
+    "name": "rob",
+    "ip": "172.16.6.71",
+    "supported": [
+      {
+        "title": "penis",
+        "endpoint": "penis",
+        "serviceType": "penis"
+      }
+    ]
+  },
+  "nate": {
+    "name": "nate",
+    "ip": "172.16.6.72",
+    "supported": [
+      {
+        "title": "",
+        "endpoint": "",
+        "serviceType": ""
+      }
+    ]
+  },
+  "rudy": {
+    "name": "rudy",
+    "ip": "172.16.6.73",
+    "supported": [
+      {
+        "title": "",
+        "endpoint": "",
+        "serviceType": ""
+      }
+    ]
+  },
+  "carson": {
+    "name": "carson",
+    "ip": "",
+    "supported": [
+      {
+        "title": "Twitter",
+        "endpoint": "https://twitter.com",
+        "serviceType": "web"
+      }
+    ]
+  }
 }

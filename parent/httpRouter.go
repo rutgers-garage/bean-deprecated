@@ -7,8 +7,14 @@ import (
 	"net/http"
 )
 
-func startService(w http.ResponseWriter, req *http.Request) {
-	fmt.Println("Received start-service request")
+type HTTPCommandReqBody struct {
+	MachineName string
+	ServiceName string
+	ServiceType string
+}
+
+func httpExecWebCommand(w http.ResponseWriter, req *http.Request) {
+	fmt.Println("Received Web Service request")
 	switch req.Method {
 	case "POST":
 		if err := req.ParseForm(); err != nil {
@@ -17,15 +23,24 @@ func startService(w http.ResponseWriter, req *http.Request) {
 		}
 
 		decoder := json.NewDecoder(req.Body)
-		c := AWSServiceRequestBody{}
+		c := HTTPCommandReqBody{}
 		err := decoder.Decode(&c)
 
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		startAWSService(c)
-		fmt.Fprintf(w, "Successfully started new service")
+		machine := getMachines()[c.MachineName]
+		var service string
+
+		for i, x: range machine.Supported {
+			if x.Name = c.ServiceName {
+				service : x.Endpoint 
+			}
+		}
+
+		execWebService(machine.IP, service)
+		fmt.Fprintf(w, "Successfully ran command")
 	default:
 		fmt.Fprintf(w, "Sorry, only POST methods are supported.")
 	}
