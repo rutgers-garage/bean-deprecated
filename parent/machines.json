@@ -5,13 +5,17 @@
     "supported": [
       {
         "title": "Twitter",
+        "description": "Open Twitter.",
         "endpoint": "https://twitter.com",
-        "serviceType": "web"
+        "serviceType": "web",
+        "params": []
       },
       {
         "title": "Troll",
+        "description": "Open the Supreme website to troll Henry.",
         "endpoint": "https://supremenewyork.com",
-        "serviceType": "web"
+        "serviceType": "web",
+        "params": []
       }
     ]
   }

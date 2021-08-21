@@ -34,3 +34,8 @@ func getWhitelist() map[string][]BeanService {
 	m := deserializeWhitelist()
 	return m
 }
+
+func getServicesForMachine(machineName string) []BeanService {
+	m := deserializeMachines()
+	return m[machineName].Supported
+}

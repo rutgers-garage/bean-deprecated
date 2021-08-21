@@ -1,19 +1,38 @@
 package main
 
-type HTTPCommandBody struct {
+type HTTPCommandReqBody struct {
 	MachineName string
 	ServiceName string
 	ServiceType string
 }
 
-type BeanService struct {
+type HTTPBeanNodeWrapper struct {
+	Name      string
+	Supported []BeanService
+}
+
+type HTTPBeanServiceWrapper struct {
 	Title       string
-	Endpoint    string
-	ServiceType bool
+	Description string
+	ServiceType string
+	Params      []Param
 }
 
 type BeanNode struct {
 	Name      string
 	IP        string
 	Supported []BeanService
+}
+
+type BeanService struct {
+	Title       string
+	Description string
+	Endpoint    string
+	ServiceType string
+	Params      []Param
+}
+
+type Param struct {
+	Title string
+	Type  string
 }

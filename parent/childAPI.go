@@ -16,7 +16,7 @@ func createClient(ip string) *rpc.Client {
 	return client
 }
 
-func pollMachines() {
+func pollMachines() map[string]bool {
 
 	machines := getMachines()
 	machineUpStatus := make(map[string]bool)
@@ -27,16 +27,18 @@ func pollMachines() {
 		BeanServiceErr := client.Call("Child.Up", "", &childUpStatus)
 
 		if BeanServiceErr != nil {
-			log.Fatal(BeanServiceErr)
+			log.Print(BeanServiceErr, "(", k, ")")
 		}
 
 		machineUpStatus[v.Name] = childUpStatus
 		fmt.Printf("%v response is %v\n", k, childUpStatus)
 	}
 
+	return machineUpStatus
+
 }
 
-func execWebCommand(ip string, endpoint string) {
+func execWebCommand(ip string, endpoint string) string {
 	client := createClient(ip)
 	childRetString := ""
 
@@ -46,4 +48,6 @@ func execWebCommand(ip string, endpoint string) {
 	}
 
 	fmt.Printf("R response is %v\n", childRetString)
+
+	return childRetString
 }
